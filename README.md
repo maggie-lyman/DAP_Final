@@ -2,10 +2,14 @@
 
 Our data
 - Tracts from census for chloropleth
-- ADU issued (coach house vs basement unit)
-- ADU applications (shows denied and accepted)
+- ADU applications (shows denied and accepted, including type)
 - Average rent data (API)
 - Census? 
+- Look for shape file with ADU zones?
+
+* Clean data only for those up until 10/31/2023
+* Program started May 1, 2021
+--> Look at first 18-months of the program
 
 Our questions
 - Where are ADUs being built? Are they being built in areas with the highest rents?
