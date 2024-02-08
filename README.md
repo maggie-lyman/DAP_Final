@@ -30,6 +30,10 @@ Our plots
 
 Text processing <- come back
 
+Find articles about ADU ordinance/pilot program to identify public perception of ADUs. Plot if public perception is mostly positive or mostly negative. 
+
 Analysis
 
-Linear regression of average number of ADU applications in each neighborhood/tract by log median rent (or median rent). Report on statistic and plot. Use plot as one of two static plots or add to Shiny app. 
+Linear regression of average number of ADU applications in each neighborhood/tract by log median rent (or median rent). Report on statistic and plot. Use plot as one of two static plots or add to Shiny app.
+
+If there is enough data, we could conduct a t-test to identify if ADUs are more positively received in certain zones. 
