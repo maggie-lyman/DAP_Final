@@ -28,7 +28,7 @@ Our plots
 4. Dynamic: Applications by month since the start of program filtered by ward/neighborhood - use plotly to see exact number (include regression?)
   - Maggie 
 
-Text processing <- come back
+Text processing 
 
 Find articles about ADU ordinance/pilot program to identify public perception of ADUs. Plot if public perception is mostly positive or mostly negative. 
 
