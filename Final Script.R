@@ -1,5 +1,7 @@
 ## Max's code from pset2:
 
+# Add paths
+
 # Read CSV file with ADU approvals
 
 adus_issued <- read_csv("Additional_Dwelling_Unit_Preapprovals_Issued_20240130.csv")
