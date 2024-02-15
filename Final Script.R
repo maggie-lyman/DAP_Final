@@ -72,7 +72,7 @@ census_clean <- census_wide |>
          gross_rent_perc_income = B25070_001)
 # Clean column names
 adu_clean <- rename_columns(adus_issued)
-census_celan <- rename_columns(census_clean)
+census_clean <- rename_columns(census_clean)
 
 # Add coords to ADU
 adu_coord <- make_coord(adu_clean)
