@@ -32,6 +32,16 @@ Text processing
 
 Find articles about ADU ordinance/pilot program to identify public perception of ADUs. Plot if public perception is mostly positive or mostly negative. 
 
+Text processing ideas
+
+[Reddit](https://www.reddit.com/r/chicago/comments/13wu8pw/adu_citywide_expansion_ordinance_introduced_to/) <- could be insane but also fun?
+[Sun-times](https://chicago.suntimes.com/city-hall/2023/6/9/23754347/chicago-affordable-housing-expand-coach-houses-basement-units-program)
+[Blog](https://www.bldgproj.com/blog/chicago-adu-ordinance)
+[Chicago ULI](https://chicago.uli.org/programs/uli-in-the-community/adu-initiative/)
+[The Real Deal](https://therealdeal.com/chicago/2023/06/09/top-chicago-officials-push-citywide-adu-expansion/)
+[Chicago YIMBY](https://chicagoyimby.com/2022/11/deep-dive-into-chicagos-additional-dwelling-unit-adu-ordinance-after-six-months.html)
+
+
 Analysis
 
 Linear regression of average number of ADU applications in each neighborhood/tract by log median rent (or median rent). Report on statistic and plot. Use plot as one of two static plots or add to Shiny app.
