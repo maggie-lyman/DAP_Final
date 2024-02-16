@@ -9,6 +9,7 @@ library(snakecase)
 library(httr)
 library(jsonlite)
 library(tidycensus)
+library(testthat)
 
 ## Function
 rename_columns <- function(df){ 
@@ -26,7 +27,8 @@ make_coord <- function(df){
 ## Load data
 
 # Add path
-path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+# path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
 
 # Read in csv file
 adus_issued <- read_csv(paste0(path, "Additional_Dwelling_Unit_Preapprovals_Issued_20240130.csv"))
@@ -37,6 +39,9 @@ unzip(zipF,exdir=path)
 chicago_tracts <- st_read(
   file.path(path, "geo_export_6356fb24-e715-483f-922e-9fd4badc2b8c.shp")
 )
+# Change CRS of shapefiles
+chicago_tracts <- st_transform(chicago_tracts, 
+                              crs = 4326)
 # Read in API census data
 key <- "a58ec96cdf12838255365193b5aa59b943091de3"
 census_data <- get_acs(geography = "tract",
@@ -79,6 +84,30 @@ adu_coord <- make_coord(adu_clean)
 
 # Join Data
 
+## Static plot - Chloropleth of where ADUs are located
+# Merge shape files with ADU coordinates
+Chicago_adus_merged <- st_join(chicago_tracts, adu_coord)
+# Add a new column with a binary variable indicating whether a row represents an ADU permit issued
+Chicago_adus_tract <- Chicago_adus_merged |>
+  mutate(ADU_tract = if_else(is.na(id), 0, 1))
+# Group data by census tract and find total number of ADUs per census tract
+Chicago_adus_tract_counts <- Chicago_adus_tract |>
+  group_by(tractce10, .drop = FALSE) |>
+  summarize(count = sum(ADU_tract))
+# Check to ensure that all ADU permits issued are counted
+test_that("All ADU permits are represented in count", 
+          expect_equal(sum(Chicago_adus_tract_counts$count), nrow(adus_issued)))
+# Plot a choropleth of the number of ADUs in each ward
+ggplot()  +
+  geom_sf(data = Chicago_adus_tract_counts, 
+          aes(fill = count)) +
+  scale_fill_gradient(low = "white", 
+                      high = "dark red") + 
+  labs(title = "ADU Permits are Concentrated in North Side Census Tracts", 
+       subtitle = "Number of ADU permits issued in Chicago, by census tract",
+       fill = "ADU Permits",
+       caption = "Source: City of Chicago Data Portal") +
+  theme_minimal() 
 
 ## Max problem set 2 notes:
 # Read CSV file with ADU approvals
