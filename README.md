@@ -23,10 +23,10 @@ Our plots
   - Approved applications
 2. Dynamic: Average rent and number of ADUs built
   - Max
-3. Non-dynamic: Chloropleth with ADU denials (and type by shape)
-  - Maggie
+3. Non-dynamic: Choropleth with ADU denials (and type by shape)
+  - Maggie (DONE)
 4. Dynamic: Applications by month since the start of program filtered by ward/neighborhood - use plotly to see exact number (include regression?)
-  - Maggie 
+  - Maggie (DONE)
 
 Text processing 
 
