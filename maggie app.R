@@ -3,7 +3,6 @@ library(readr)
 library(shiny)
 library(sf)
 library(spData)
-library(shinyFeedback)
 library(snakecase)
 library(plotly)
 library(lubridate)
@@ -16,7 +15,6 @@ library(tidycensus)
 
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
-  useShinyFeedback(),
   sidebarLayout(
     sidebarPanel(
       img(src = "https://d11jve6usk2wa9.cloudfront.net/platform/10747/assets/logo.png",
@@ -27,9 +25,9 @@ ui <- fluidPage(
     ), 
     mainPanel(
       tabsetPanel(
-        tabPanel("Plot", plotOutput("graph")),
-        tabPanel("Neighborhood Info", tableOutput("median_rent"),
-                 tableOutput("median_income"), tableOutput("regression"))
+        tabPanel("Plot", plotlyOutput("graph")),
+        tabPanel("Median Rent", tableOutput("median_rent")),
+        tabPanel("Median Income", tableOutput("median_income"))
       )
     )
   )
@@ -132,36 +130,29 @@ server <- function(input, output) {
     mutate(total_submissions = sum(ADU_submitted)) |>
     distinct(pri_neigh, month, .keep_all = TRUE) |>
     select(pri_neigh, month, ADU_submitted, total_submissions, median_income, 
-           median_gross_rent)
-  
-  # Filter by neighborhood and add warning
-  no_ADUs <- adu_months |>
-    ungroup() |>
-    group_by(pri_neigh) |>
-    summarize(sum = sum(ADU_submitted)) |>
-    filter(sum == 0) |>
-    pull(pri_neigh)
+           median_gross_rent) |>
+    ungroup()
   
   # Choose neighborhood
-  observe({
-    nb_options <- adu_months |> ungroup() |> distinct(pri_neigh) |> pull()
-    updateSelectInput(inputId = "select_neighborhood", choices = nb_options)
-    
+  observeEvent(adu_months, {
+    nb_options <- adu_months |>
+      group_by(pri_neigh) |>
+      summarize(sum = sum(ADU_submitted)) |>
+      filter(sum > 0) |>
+      pull(pri_neigh)
+    updateSelectInput(inputId = "select_neighborhood", choices = nb_options) 
+  })
+  
+  # Filter Data  
     chosen_neighborhood <- reactive({
-      req(input$select_neighborhood) 
-      data_exists <- !(input$select_neighborhood %in% no_ADUs)
-      feedbackWarning("select_neighborhood", !data_exists, "No data available. Please select another neighborhood.")
-      
       adu_months |>
         filter(pri_neigh == input$select_neighborhood)
     })
-  })
   
   # Plot ADU submissions
   output$graph <- renderPlotly({
-    chosen_neighborhood() |>
-      filter(!is.na(month)) |>
-      ggplot(aes(x = month,
+    plot <- ggplot(data = chosen_neighborhood(),
+             aes(x = month,
                  y = total_submissions)) +
       geom_point() +
       geom_line(aes(group = 1)) +
@@ -169,22 +160,18 @@ server <- function(input, output) {
            subtitle = "Monthly applications since ordinance passed \n in December 2020",
            y = "Submission count",
            x = "Month")
+    ggplotly(plot)
   })
   
   # Create table 
   output$median_rent <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      select(median_rent)
+      pull(median_gross_rent)
   })
   
   output$median_income <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      select(median_income)
-  })
-  
-  output$regression <- renderTable({
-    reg <- lm(total_submissions ~ median_gross_rent + median_income, data = adu_months)
-    summary(reg)
+      pull(median_income)
   })
 }
 
