@@ -7,6 +7,12 @@ library(shinyFeedback)
 library(snakecase)
 library(plotly)
 library(lubridate)
+library(sf)
+library(spData)
+library(snakecase)
+library(httr)
+library(jsonlite)
+library(tidycensus)
 
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
@@ -137,16 +143,15 @@ server <- function(input, output) {
     pull(pri_neigh)
   
   # Choose neighborhood
-  observeEvent(no_ADUs, { 
-    nb_options <- adu_months |>
-      ungroup() |>
-      distinct(pri_neigh) |>
-      pull()
+  observe({
+    nb_options <- adu_months |> ungroup() |> distinct(pri_neigh) |> pull()
     updateSelectInput(inputId = "select_neighborhood", choices = nb_options)
     
     chosen_neighborhood <- reactive({
+      req(input$select_neighborhood) 
       data_exists <- !(input$select_neighborhood %in% no_ADUs)
       feedbackWarning("select_neighborhood", !data_exists, "No data available. Please select another neighborhood.")
+      
       adu_months |>
         filter(pri_neigh == input$select_neighborhood)
     })
