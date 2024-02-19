@@ -21,11 +21,11 @@ Our plots
 1. Non-dynamic: Chloropleth/point where are ADUs (and type by shape)
   - Max
   - Approved applications
-2. Dynamic: Average rent and number of ADUs built
+2. Dynamic: Average rent and number of ADUs built (include regression?)
   - Max
 3. Non-dynamic: Choropleth with ADU denials (and type by shape)
   - Maggie (DONE)
-4. Dynamic: Applications by month since the start of program filtered by ward/neighborhood - use plotly to see exact number (include regression?)
+4. Dynamic: Applications by month since the start of program filtered by ward/neighborhood - use plotly to see exact number 
   - Maggie (DONE)
 
 Text processing 

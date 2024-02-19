@@ -154,12 +154,15 @@ server <- function(input, output) {
     plot <- ggplot(data = chosen_neighborhood(),
              aes(x = month,
                  y = total_submissions)) +
-      geom_point() +
-      geom_line(aes(group = 1)) +
+      geom_point(color = "lightgray", fill = "steelblue",
+                 shape = 21, size = 2) +
+      geom_line(aes(group = 1),
+                color = "steelblue") +
       labs(title = "ADU Submissions By Month",
            subtitle = "Monthly applications since ordinance passed \n in December 2020",
            y = "Submission count",
-           x = "Month")
+           x = "Month") +
+      theme_bw()
     ggplotly(plot)
   })
   
