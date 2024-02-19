@@ -1,5 +1,3 @@
-## Maggie data cleaning
-
 ## Load packages
 library(tidyverse)
 library(readr)
