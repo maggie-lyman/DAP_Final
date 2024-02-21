@@ -114,3 +114,60 @@ reddit_nrc |>
        caption = "Data collected from Chicago Sub-Reddit") +
   ylim(0, 102) +
   theme_bw()
+
+## Dependencies
+# Functions to find children and parents 
+children <- function(interested_word){
+  reddit_lemma |>
+    filter(lemma == interested_word) |>
+    inner_join(reddit_lemma |> dplyr::select(doc_id, head_token_id, lemma),
+               by = c("token_id" = "head_token_id", "doc_id" = "doc_id")) |>
+    dplyr::select(doc_id, lemma.y, lemma.x) |>
+    rename(parent = lemma.x, children = lemma.y)
+}
+
+parent <- function(interested_word){
+  reddit_lemma |>
+    filter(lemma == interested_word) |>
+    inner_join(reddit_lemma |> dplyr::select(doc_id, token_id, lemma),
+               by = c("head_token_id" = "token_id", "doc_id" = "doc_id")) |>
+    dplyr::select(doc_id, lemma.y, lemma.x) |>
+    rename(children = lemma.x, parent = lemma.y)
+}
+
+# Bigrams
+bigram <- function(children_df, parent_df){
+  bigram_df <- rbind(children_df |> dplyr::select(doc_id, parent, children),
+                     parent_df |> dplyr::select(doc_id, parent, children))
+}
+
+
+bigram(ordinance_ch, ordinance_pa)
+
+bigrams <- rbind(children %>% select(doc_id, children), parents %>% select(doc_id, parent))
+bigram_counts <- bigrams %>%
+  group_by(doc_id, parent, child) %>% 
+  summarize(n = n()) %>%
+  ungroup()
+
+bigram_graph <- bigram_counts %>% filter(doc_id == "doc1" & n > 3) %>% select(parent, child, n) %>%
+  graph_from_data_frame() 
+
+ggraph(bigram_graph, layout = "fr") + 
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = arrow(length = unit(4, 'mm')), end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1)  + theme_void()
+
+# Find children and parents
+ordinance_ch <- children("ordinance")
+ordinance_pa <- parent("ordinance")
+
+city_ch <- children("city")
+city_pa <- parent("city")
+
+chicago_ch <- children("Chicago")
+chicago_pa <- parent("Chicago")
+
+housing_ch <- children("housing")
+housing_pa <- parent("housing")
+
+
