@@ -5,6 +5,8 @@ library(sentimentr)
 library(rvest)
 library(RedditExtractoR)
 library(udpipe)
+library(igraph)
+library(ggraph)
 
 # Upload data using RedditExtractoR package
 url <- "https://www.reddit.com/r/chicago/comments/13wu8pw/adu_citywide_expansion_ordinance_introduced_to/"
@@ -139,18 +141,26 @@ parent <- function(interested_word){
 bigram <- function(children_df, parent_df){
   bigram_df <- rbind(children_df |> dplyr::select(doc_id, parent, children),
                      parent_df |> dplyr::select(doc_id, parent, children))
+  
+  bigram_counts <- bigram_df |>
+    group_by(doc_id, parent, children) |> 
+    summarize(n = n()) |>
+    ungroup() |>
+    arrange(desc(n))
+  
+  return(bigram_counts)
 }
 
 
 bigram(ordinance_ch, ordinance_pa)
 
-bigrams <- rbind(children %>% select(doc_id, children), parents %>% select(doc_id, parent))
-bigram_counts <- bigrams %>%
-  group_by(doc_id, parent, child) %>% 
-  summarize(n = n()) %>%
-  ungroup()
+bigram_city <- bigram(city_ch, city_pa)
 
-bigram_graph <- bigram_counts %>% filter(doc_id == "doc1" & n > 3) %>% select(parent, child, n) %>%
+bigram_city |>
+  distinct(doc_id)
+
+
+graph_city <- bigram_city %>%  dplyr::select(parent, children, n) %>%
   graph_from_data_frame() 
 
 ggraph(bigram_graph, layout = "fr") + 
