@@ -151,21 +151,19 @@ bigram <- function(children_df, parent_df){
   return(bigram_counts)
 }
 
-
-bigram(ordinance_ch, ordinance_pa)
-
-bigram_city <- bigram(city_ch, city_pa)
-
-bigram_city |>
-  distinct(doc_id)
-
-
-graph_city <- bigram_city %>%  dplyr::select(parent, children, n) %>%
-  graph_from_data_frame() 
-
-ggraph(bigram_graph, layout = "fr") + 
-  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = arrow(length = unit(4, 'mm')), end_cap = circle(.07, 'inches')) +
-  geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1)  + theme_void()
+graph_bigram <- function(df){
+  plot <- df |>
+    dplyr::select(parent, children, n) |>
+    graph_from_data_frame() 
+  
+  ggraph(plot, layout = "fr") + 
+    geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, 
+                   arrow = arrow(length = unit(4, 'mm')), 
+                   end_cap = circle(.07, 'inches')) +
+    geom_node_point(color = "lightblue", size = 5) + 
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1)  + 
+    theme_void() 
+}
 
 # Find children and parents
 ordinance_ch <- children("ordinance")
@@ -180,4 +178,12 @@ chicago_pa <- parent("Chicago")
 housing_ch <- children("housing")
 housing_pa <- parent("housing")
 
+# Plot bigrams
+bigram_ordinance <- bigram(ordinance_ch, ordinance_pa)
+
+
+
+
+bigram_city <- bigram(city_ch, city_pa)
+graph_bigram(bigram_city)
 
