@@ -19,16 +19,19 @@ Our questions
 Our plots
 
 1. Non-dynamic: Chloropleth/point where are ADUs (and type by shape)
-  - Max
+  - Max (DONE)
   - Approved applications
 2. Dynamic: Average rent and number of ADUs built (include regression?)
   - Max
+  - Update Maggie app.R file to include regression plot on another tab
 3. Non-dynamic: Choropleth with ADU denials (and type by shape)
   - Maggie (DONE)
 4. Dynamic: Applications by month since the start of program filtered by ward/neighborhood - use plotly to see exact number 
   - Maggie (DONE)
+5. Dynamic: Text processing dashboard with sentiment analysis and dependency plots
+  - Maggie (DONE)
 
-Text processing 
+Text processing  (DONE)
 
 Find articles about ADU ordinance/pilot program to identify public perception of ADUs. Plot if public perception is mostly positive or mostly negative. 
 
