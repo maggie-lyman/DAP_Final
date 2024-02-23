@@ -1,5 +1,11 @@
 # DAP_Final
 
+**To Do as of 2/22**
+  1. Analysis section --> update "maggie app.R" page to include regression and graph
+  2. Finish slides --> Make sure it knits and graphs are included
+  3. Finish write up
+  4. Complete ReadMe file --> started below our notes
+
 Our data
 - Tracts from census for chloropleth
 - ADU applications (shows denied and accepted, including type)
@@ -44,9 +50,14 @@ Text processing ideas
 [The Real Deal](https://therealdeal.com/chicago/2023/06/09/top-chicago-officials-push-citywide-adu-expansion/)
 [Chicago YIMBY](https://chicagoyimby.com/2022/11/deep-dive-into-chicagos-additional-dwelling-unit-adu-ordinance-after-six-months.html)
 
-
 Analysis
 
 Linear regression of average number of ADU applications in each neighborhood/tract by log median rent (or median rent). Report on statistic and plot. Use plot as one of two static plots or add to Shiny app.
 
 If there is enough data, we could conduct a t-test to identify if ADUs are more positively received in certain zones. 
+
+## ReadMe File
+
+This repo analyzes Additional Dwelling Units in Chicago. This analysis uses data collected from the City of Chicago, US Census, and text data from the Chicago sub-reddit.
+
+Packages to use this repo include:

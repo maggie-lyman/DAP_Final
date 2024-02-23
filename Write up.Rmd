@@ -1,0 +1,23 @@
+---
+title: "Final Write UP"
+output: pdf_document
+date: "2024-02-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**I put some paragraphs below that are relevant from my current event submission last quarter. 
+
+## Chicago Additional Dwelling Unit Ordinance
+Maggie Lyman & Max Wagner
+
+In May 2021, Chicago passed the Additional Dwelling Unit (ADU) Ordinance. This program was developed to streamline zoning requirements for basement and attic apartment conversion projects and legalize the construction of backyard coach houses. The ordinance was enacted in five pilot zones (North, Northwest, South, West, and Southwest) dispersed throughout the city. The program aims to provide more affordable units, increase density in popular neighborhoods, provide rental units in neighborhoods that are primarily single-family homes, and provide additional income for homeowners and landlords. Historically, ADUs were popular in Chicago until 1957 when zoning regulations changed, prohibiting these units due to parking requirements. In the first two years of this program 462 new units have been developed. 
+
+There are conflicting zoning requirements for each zone that is consistent with historical, discriminatory zoning laws. The majority of ADUs have been constructed in the North and Northwest zones. What the article failed to mention is that for the construction of ADUs in the South, West, and Southwest zones, buildings with one to three units must be owner-occupied, that is the landlord must live on the property. Additionally, in the West, South, and Southwest zones only two ADU permits will be issued per block per year. Conversely, only in the North and Northwest zones can vacant lots have coach houses constructed before a principal residence. Perhaps these zoning requirements are to protect renters in the South, West, and Southwest zones from predatory landlords or from investors buiding cheaply made coach houses on vacant lots. However, the unintended consequence is that there is a lack of new, affordable units in historically disinvested and underfunded areas. 
+
+There is a commitment to making ADUs affordable. For properties with two or more ADUs, rent must be set at 60% area median income (AMI) for every other additional unit added to the property. However, at 60% AMI, it is unclear who can actually afford this housing. There are supplemental programs landlords and tenants can utililize to further reduce the cost of rent for ADUs. Despite these commitments, there is inequality in who has the funds to build ADUs. It is estimated that it costs 75,000 dollars to convert a basement unit and 150,000 dollars to construct a coach house. The enactment of this program included grants for conversion and construction projects, however, much of that grant money has run out in the last two years. 
+
+There is already pushback from Aldermen who worry rental units and renters will compromise the culture of their single family home neighborhoods, adding noise, congestion, and litter and, most importantly, subjecting low-income residents to discrimination and hyper-surveillence in their new communities. 
+
