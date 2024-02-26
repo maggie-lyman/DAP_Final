@@ -20,7 +20,14 @@ Our data
 Our questions
 - Where are ADUs being built? Are they being built in areas with the highest rents?
 - Where are ADUs being denied?
-- What kinds of ADUs are being built? 
+
+Presentation Agenda
+1. Choropleth of zones --> approved by zone
+2. Choropleth of denials 
+3. Shiny app 1 --> **change to approvals by month
+4. Regression
+5. Affordability
+6. Text processing 
 
 Our plots
 

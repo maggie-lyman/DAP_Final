@@ -13,6 +13,8 @@ library(httr)
 library(jsonlite)
 library(tidycensus)
 
+## Change to application approvals by month instead of applications by month
+
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
   sidebarLayout(
@@ -123,21 +125,30 @@ server <- function(input, output) {
   
   ## Summarize data
   adu_months <- adu_summarize |>
-    mutate(submission_date = mdy(submission_date),
+    mutate(ADU_approved = ifelse(status == "Issued", 1, 0),
+           approval_date = mdy(status_updated_date),
+           month = round_date(approval_date, 'month'),
+           submission_date = mdy(submission_date),
            month = round_date(submission_date, 'month'),
            ADU_submitted = if_else(is.na(id), 0, 1)) |>
+    group_by(pri_neigh) |>
+    mutate(avg_median_income = mean(median_income, na.rm = TRUE),
+           avg_gross_rent = mean(median_gross_rent, na.rm = TRUE)) |>
+    ungroup() |>
     group_by(month) |>
-    mutate(total_submissions = sum(ADU_submitted)) |>
+    mutate(total_approvals = sum(ADU_approved),
+           total_submissions = sum(ADU_submitted)) |>
     distinct(pri_neigh, month, .keep_all = TRUE) |>
-    select(pri_neigh, month, ADU_submitted, total_submissions, median_income, 
-           median_gross_rent) |>
+    select(pri_neigh, month, ADU_approved, total_approvals, ADU_submitted,
+           median_income, total_submissions, median_gross_rent, 
+           avg_median_income, avg_gross_rent) |>
     ungroup()
   
   # Choose neighborhood
   observeEvent(adu_months, {
     nb_options <- adu_months |>
       group_by(pri_neigh) |>
-      summarize(sum = sum(ADU_submitted)) |>
+      summarize(sum = sum(ADU_approved, na.rm = TRUE)) |>
       filter(sum > 0) |>
       pull(pri_neigh)
     updateSelectInput(inputId = "select_neighborhood", choices = nb_options) 
@@ -151,31 +162,46 @@ server <- function(input, output) {
   
   # Plot ADU submissions
   output$graph <- renderPlotly({
-    plot <- ggplot(data = chosen_neighborhood(),
-             aes(x = month,
-                 y = total_submissions)) +
-      geom_point(color = "lightgray", fill = "steelblue",
+    plot <- ggplot(data = chosen_neighborhood()) +
+      geom_point(aes(x = month,
+                     y = total_approvals,
+                     fill = "Approvals"),
+                 color = "lightgray",
                  shape = 21, size = 2) +
-      geom_line(aes(group = 1),
+      geom_line(aes(x = month,
+                    y = total_approvals, group = 1),
+                color = "lightgreen",
+                linetype = "dashed") +
+      geom_point(aes(x = month,
+                     y = total_submissions,
+                     fill = "Submissions"),
+                 color = "lightgray",
+                 shape = 21, size = 2) +
+      geom_line(aes(x = month,
+                    y = total_submissions, group = 1),
                 color = "steelblue") +
-      labs(title = "ADU Submissions By Month",
-           subtitle = "Monthly applications since ordinance passed \n in December 2020",
-           y = "Submission count",
+      labs(title = "ADU submissions and approvals by month",
+           subtitle = "Monthly applications and approvals since ordinance passed \n in December 2020",
+           y = "Submission and approval count",
            x = "Month") +
+      scale_fill_manual(values = c("Approvals" = "lightgreen", "Submissions" = "steelblue"), 
+                        guide = guide_legend(title = "Application type")) +
       theme_bw()
-    ggplotly(plot)
+    
+      ggplotly(plot)
   })
   
   # Create table 
   output$median_rent <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      pull(median_gross_rent)
+      pull(avg_gross_rent)
   })
   
   output$median_income <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      pull(median_income)
+      pull(avg_median_income)
   })
 }
 
 shinyApp(ui = ui, server = server)
+
