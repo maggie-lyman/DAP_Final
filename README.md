@@ -24,7 +24,7 @@ Our questions
 Presentation Agenda
 1. Choropleth of zones --> approved by zone
 2. Choropleth of denials 
-3. Shiny app 1 --> **change to approvals by month
+3. Shiny app 1 --> **change to approvals by month, not for presentation
 4. Regression
 5. Affordability
 6. Text processing 

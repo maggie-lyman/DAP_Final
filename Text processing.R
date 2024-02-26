@@ -164,7 +164,7 @@ server <- function(input, output) {
       geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, 
                      arrow = arrow(length = unit(4, 'mm')), 
                      end_cap = circle(.07, 'inches')) +
-      geom_node_point(color = "lightblue", size = 5) + 
+      geom_node_point(color = "skyblue2", size = 5) + 
       geom_node_text(aes(label = name), vjust = 1, hjust = 1)  + 
       theme_void() 
   }
