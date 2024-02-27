@@ -64,7 +64,7 @@ server <- function(input, output) {
                                        "B07002_001", "B07013_002", "B25106_002", "B25064_001",
                                        "B25070_001"),
                          state = "IL",
-                         year = 2022,
+                         year = 2020,
                          output = "tidy",
                          county = "Cook",
                          key = key,
