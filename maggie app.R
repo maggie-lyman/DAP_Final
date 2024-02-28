@@ -13,8 +13,6 @@ library(httr)
 library(jsonlite)
 library(tidycensus)
 
-## Change to application approvals by month instead of applications by month
-
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
   sidebarLayout(
@@ -27,9 +25,11 @@ ui <- fluidPage(
     ), 
     mainPanel(
       tabsetPanel(
-        tabPanel("Plot", plotlyOutput("graph")),
-        tabPanel("Median Rent", tableOutput("median_rent")),
-        tabPanel("Median Income", tableOutput("median_income"))
+        tabPanel("Plot", 
+                 h5("Monthly applications and approvals since ordinance passed in May 2021"),
+                 plotlyOutput("graph")),
+        tabPanel("Median Rent (2020)", tableOutput("median_rent")),
+        tabPanel("Median Income (2020)", tableOutput("median_income"))
       )
     )
   )
@@ -181,7 +181,6 @@ server <- function(input, output) {
                     y = total_submissions, group = 1),
                 color = "steelblue") +
       labs(title = "ADU submissions and approvals by month",
-           subtitle = "Monthly applications and approvals since ordinance passed \n in December 2020",
            y = "Submission and approval count",
            x = "Month") +
       scale_fill_manual(values = c("Approvals" = "lightgreen", "Submissions" = "steelblue"), 

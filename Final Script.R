@@ -54,10 +54,6 @@ census_data <- get_acs(geography = "tract",
         key = key,
         survey = "acs5")
 
-# For our notes only: I searched through this to find the right census variables
-census_variables <- load_variables(2021, "acs5", cache = TRUE)
-view(census_variables)
-
 ## Data Cleaning
 # Rename census variables
 census_wide <- census_data |>
@@ -142,7 +138,7 @@ denied_point <- adu_app_coord |>
   filter(status == "Denied")
 
 # Plot chloropleth with denials
-ggplot() +
+denials <- ggplot() +
   geom_sf(data = app_aggregated,
           aes(fill = denial_rate)) +
   geom_sf(data = denied_point,
@@ -157,6 +153,10 @@ ggplot() +
        fill = "Rate of denials",
        caption = "Source: City of Chicago Data Portal") +
   theme_minimal() 
+# Print plot
+denials
+# save plot
+ggsave(paste0(path, "adu_denials.png"), plot = denials)
 
 ## Max problem set 2 notes:
 # Read CSV file with ADU approvals
