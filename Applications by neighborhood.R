@@ -155,10 +155,10 @@ server <- function(input, output) {
   })
   
   # Filter Data  
-    chosen_neighborhood <- reactive({
-      adu_months |>
-        filter(pri_neigh == input$select_neighborhood)
-    })
+  chosen_neighborhood <- reactive({
+    adu_months |>
+      filter(pri_neigh == input$select_neighborhood)
+  })
   
   # Plot ADU submissions
   output$graph <- renderPlotly({
@@ -187,7 +187,7 @@ server <- function(input, output) {
                         guide = guide_legend(title = "Application type")) +
       theme_bw()
     
-      ggplotly(plot)
+    ggplotly(plot)
   })
   
   # Create table 
@@ -203,4 +203,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
-
