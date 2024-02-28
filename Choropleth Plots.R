@@ -141,7 +141,7 @@ Chicago_adu_app_tract <- Chicago_adu_app_tract |>
                              is.na(status) ~ NA,
                              TRUE ~ 0)) 
 
-# Group data by census tract and find total number of ADUs per census tract
+#Group data by census tract and find total number of ADUs per census tract
 Chicago_adus_tract_counts <- Chicago_adus_tract |>
   group_by(tractce10, .drop = FALSE) |>
   summarize(count = sum(ADU_tract))
@@ -165,7 +165,7 @@ df_inside_adu_zone_counts <- data_frame(inside_adu_zone_counts)
 
 df_zone_census_merge <- data_frame(zone_census_merge)
 
-#Join the two dataframes
+#Join the two dataframes to get census data for each tract within an ADU zone
 df_tract_counts_census <- inner_join(df_inside_adu_zone_counts, df_zone_census_merge, by = "tractce10")
 
 # Check to ensure that all ADU permits issued are counted
@@ -186,42 +186,38 @@ denied_point <- adu_app_coord |>
   filter(status == "Denied")
 
 #Find the population of each zone
-zone_census_merge |>
+zone_population_grouped <- df_tract_counts_census |>
   drop_na(total_pop) |>
   group_by(Zone) |>
   summarize(total_zone_population = sum(total_pop)) 
 
-#Add a zone population column 
-zone_census_pop <- zone_census_merge |>
-  mutate(Zone = if_else(is.na(name), "Outside ADU Zone", name),
-         zone_pop = case_when(Zone == "North" ~ 358733,
-                              Zone == "Northwest" ~ 236739,
-                              Zone == "Outside ADU Zone" ~ 1710094,
-                              Zone == "South" ~ 234146,
-                              Zone == "Southeast" ~ 59054,
-                              Zone == "West" ~ 86965))
+#Add a zone population column to the zone_census_merge 
+df_tract_counts_census_pop <- df_zone_census_merge |>
+  inner_join(zone_population_grouped, by = "Zone")
 
 #Add the proportion of each census tract's population to the total zone population
-zone_census_pop <- zone_census_pop |>
-  mutate(pop_proportion = total_pop/zone_pop)
+df_tract_counts_census_pop <- df_tract_counts_census_pop |>
+  mutate(pop_proportion = total_pop/total_zone_population)
 
 #Convert each census tract's metrics to a weighted measure
-zone_census_pop <- zone_census_pop |>
+df_tract_counts_census_pop <- df_tract_counts_census_pop |>
   mutate(rent_weighted = median_gross_rent * pop_proportion)
 
 #Find the population-weighted median for each zone
-zone_census_pop |>
+zone_rent_grouped <- df_tract_counts_census_pop |>
   drop_na(rent_weighted) |>
   group_by(Zone) |>
   summarize(zone_median_rent = sum(rent_weighted))
 
 #Add a zone median rent column 
-adu_zones_counts_rent <- adu_zones_counts |>
-  mutate(zone_median_rent = case_when(name == "North" ~ 1497,
-                                      name == "Northwest" ~ 1638,
-                                      name == "South" ~ 1106,
-                                      name == "Southeast" ~ 1041,
-                                      name == "West" ~ 1016))
+df_adu_zones <- data.frame(adu_zones) |>
+  rename(Zone = name)
+
+df_adu_zones_median_rent <- df_adu_zones |>
+  inner_join(zone_rent_grouped, by = "Zone")
+
+#Convert back to a sf file
+adu_zones_median_rent <- st_as_sf(df_adu_zones_median_rent)
 
 #Group ADU permits by zone and calculate the number of new market-rate and afffordable ADUs
 adu_by_zone <- adu_clean |>
@@ -229,15 +225,6 @@ adu_by_zone <- adu_clean |>
   summarize(total_affordable = sum(aff_adus),
             total_new_adus = sum(new_adus),
             total_market_rate = total_new_adus - total_affordable)
-
-#Add the number of possible units in each zone
-adu_by_zone_possible <- adu_by_zone |>
-  mutate(total_possible = 
-           case_when(adu_zone == "North" ~ 20156,
-                     adu_zone == "Northwest" ~ 15348,
-                     adu_zone == "South" ~ 37279,
-                     adu_zone == "Southeast" ~ 10030,
-                     adu_zone == "West" ~ 9509))
 
 #Pivot longer in order to plot data on a bar graph
 adu_by_zone_wider <- adu_by_zone |>
@@ -255,7 +242,7 @@ summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census)
 #Plot median rent by zone choropleth
 adus_by_income <- ggplot()  +
   geom_sf(data = chicago_boundaries) +
-  geom_sf(data = adu_zones_counts_rent, 
+  geom_sf(data = adu_zones_median_rent, 
           aes(fill = zone_median_rent)) +
   scale_fill_gradient(breaks=c(1025,1325, 1625), low = "#f3f7f2", high = "#33756D", 
                       guide = guide_legend(keyheight = unit(7, units = "mm"), 
