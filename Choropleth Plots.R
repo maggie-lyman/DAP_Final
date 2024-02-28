@@ -14,8 +14,8 @@ library(scales)
 library(forcats)
 
 ## Add path
-#path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
-path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
+path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+#path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
 
 ## Load data
 
@@ -230,9 +230,6 @@ adu_by_zone <- adu_clean |>
 adu_by_zone_wider <- adu_by_zone |>
   pivot_longer(cols = c(total_affordable, total_market_rate), names_to = "Metric", values_to = "Count")
 
-adu_by_zone_possible_wider <- adu_by_zone_possible |>
-  pivot_longer(cols = c(total_affordable, total_market_rate, total_new_adus), names_to = "Metric", values_to = "Count")
-
 ## Regression Analysis
 
 summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census))
@@ -346,3 +343,6 @@ adus_by_rent
 
 # Save plot
 ggsave(paste0(path, "adu_denials.png"), plot = denials)
+ggsave(paste0(path, "adu_affordable_split.png"), plot = affordable_vs_market)
+ggsave(paste0(path, "rent_regression.png"), plot = rent_regression)
+ggsave(paste0(path, "adu_by_rent.png"), plot = adus_by_rent)
