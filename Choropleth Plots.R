@@ -110,36 +110,32 @@ adu_app_coord <- make_coord(adu_app_clean)
 Chicago_adus_merged <- st_join(chicago_tracts, adu_coord)
 Chicago_adu_app_merged <- st_join(chicago_tracts, adu_app_coord)
 
-#Join Chicago tracts with ACS data
+# Join Chicago tracts with ACS data
 chicago_census_data_geo <- chicago_tracts |>
   left_join(census_clean, join_by("geoid10" == "geoid"))
 
-#Merge census tracts with ADU zones
+# Merge census tracts with ADU zones
 zone_census_merge <- st_join(chicago_census_data_geo, adu_zones, largest = TRUE)
 
 ## Manipulate Data
 
+# First clean denial data
+# Group by zone to find denail total and rate for each
+denial_locations <- adu_app_coord |>
+  mutate(denied = ifelse(status == "Denied", 1, 0)) |>
+  group_by(adu_zone) |>
+  mutate(total_apps = n(),
+         total_denials = sum(denied, na.rm = TRUE),
+         denial_rate = total_denials/total_apps) |>
+  ungroup()
+
+# Join denied data with zone shape file
+denial_shape <- st_join(adu_zones, denial_locations)
+
+# Next clean census/zone data
 # Add a new column with a binary variable indicating whether a row represents an ADU permit issued
 Chicago_adus_tract <- Chicago_adus_merged |>
   mutate(ADU_tract = if_else(is.na(id), 0, 1))
-
-# Use application dataset to create binary columns for application status
-Chicago_adu_app_tract <- Chicago_adu_app_merged |>
-  mutate(ADU_tract = ifelse(is.na(id), 0, 1))
-Chicago_adu_app_tract <- Chicago_adu_app_tract |>
-  mutate(issued = case_when(status == "Issued" &
-                              ADU_tract == 1 ~ 1,
-                            is.na(status) ~ NA,
-                            TRUE ~ 0),
-         denied = case_when(status == "Denied" &
-                              ADU_tract == 1 ~ 1,
-                            is.na(status) ~ NA,
-                            TRUE ~ 0),
-         pending = case_when(status %in% c("Notification docs requested",
-                                           "Affordability docs requested") &
-                               ADU_tract == 1 ~ 1,
-                             is.na(status) ~ NA,
-                             TRUE ~ 0)) 
 
 #Group data by census tract and find total number of ADUs per census tract
 Chicago_adus_tract_counts <- Chicago_adus_tract |>
@@ -171,19 +167,6 @@ df_tract_counts_census <- inner_join(df_inside_adu_zone_counts, df_zone_census_m
 # Check to ensure that all ADU permits issued are counted
 test_that("All ADU permits are represented in count", 
           expect_equal(sum(inside_adu_zone_counts$count), nrow(adus_issued)))
-
-# Group ADUs by tract to identify denial rate, pending rate, and approval rate
-# Sum denials per tract
-app_aggregated <- Chicago_adu_app_tract |>
-  group_by(tractce10) |>
-  summarize(issue_rate = mean(issued, na.rm = TRUE),
-            denial_rate = mean(denied, na.rm = TRUE),
-            pending_rate = mean(pending, na.rm = TRUE),
-            total_denials = sum(denied, na.rm = TRUE))
-
-# Filter for points of denial locations
-denied_point <- adu_app_coord |>
-  filter(status == "Denied")
 
 #Find the population of each zone
 zone_population_grouped <- df_tract_counts_census |>
@@ -235,6 +218,21 @@ adu_by_zone_wider <- adu_by_zone |>
 summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census))
 
 ## Plot Data
+# Plot choropleth of denials
+denials <- ggplot()  +
+  geom_sf(data = chicago_boundaries) +
+  geom_sf(data = denial_shape,
+          aes(fill = denial_rate)) +
+  geom_sf(data = denial_locations |> filter(denied == 1),
+          size = 2, shape = 21, alpha = 0.5,
+          color = "black", fill = "#66c2a4") +
+  scale_fill_gradient(low = "#66c2a4",
+                      high = "#00441b") +
+  labs(title = "ADU denials are concentrated in Southwest zone", 
+       subtitle = "ADU denial rate and denial locations by zone",
+       fill = "Denial rate (denials/total apps)",
+       caption = "Source: City of Chicago Data Portal") +
+  theme_minimal() 
 
 #Plot median rent by zone choropleth
 adus_by_rent <- ggplot()  +
@@ -266,23 +264,6 @@ adus_by_rent <- ggplot()  +
     plot.subtitle = element_text(size= 9, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.25, l = 2, unit = "cm")),
     plot.caption = element_text(size=8, color = "#4e4d47", margin = margin(b = 0.3, r=-99, unit = "cm") ),
     legend.position = c(0.2, 0.2))
-
-# Plot chloropleth with denials
-denials <- ggplot() +
-  geom_sf(data = app_aggregated,
-          aes(fill = denial_rate)) +
-  geom_sf(data = denied_point,
-          size = 2, shape = 21, alpha = 0.5,
-          fill = "#238b45",
-          color = "black") +
-  scale_fill_gradient(low = "#66c2a4",
-                      high = "#00441b",
-                      na.value = "white") +
-  labs(title = "ADU Denials concentrated in North and Southwest Census Tracts", 
-       subtitle = "Mean ADU denials and denial locations by census tract",
-       fill = "Rate of denials",
-       caption = "Source: City of Chicago Data Portal") +
-  theme_minimal() 
 
 #Plot comparison of affordable and market-rate ADUs
 affordable_vs_market <- ggplot(data = adu_by_zone_wider, 
