@@ -14,8 +14,8 @@ library(scales)
 library(forcats)
 
 ## Add path
-path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
-#path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
+#path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
 
 ## Load data
 
@@ -170,7 +170,7 @@ df_tract_counts_census <- inner_join(df_inside_adu_zone_counts, df_zone_census_m
 
 # Check to ensure that all ADU permits issued are counted
 test_that("All ADU permits are represented in count", 
-          expect_equal(sum(Chicago_adus_tract_counts$count), nrow(adus_issued)))
+          expect_equal(sum(inside_adu_zone_counts$count), nrow(adus_issued)))
 
 # Group ADUs by tract to identify denial rate, pending rate, and approval rate
 # Sum denials per tract
@@ -240,17 +240,17 @@ summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census)
 ## Plot Data
 
 #Plot median rent by zone choropleth
-adus_by_income <- ggplot()  +
+adus_by_rent <- ggplot()  +
   geom_sf(data = chicago_boundaries) +
   geom_sf(data = adu_zones_median_rent, 
           aes(fill = zone_median_rent)) +
-  scale_fill_gradient(breaks=c(1025,1325, 1625), low = "#f3f7f2", high = "#33756D", 
-                      guide = guide_legend(keyheight = unit(7, units = "mm"), 
+  scale_fill_gradient(breaks=c(950, 1100, 1250, 1400), low = "#f3f7f2", high = "#33756D", 
+                      guide = guide_legend(keyheight = unit(6, units = "mm"), 
                                            keywidth=unit(12, units = "mm"), 
                                            label.position = "right", 
                                            title.position = 'top', 
-                                           nrow=3),
-                      labels = c("$1,025", "$1,325", "$1,625")) +
+                                           nrow=4),
+                      labels = c("$950", "$1,100", "$1,250", "$1,400")) +
   labs(title = "ADU permits are concentrated in high rent zones", 
        subtitle = "City of Chicago ADU permit locations compared to zone median gross rent",
        fill = "Median Gross Rent ",
@@ -314,7 +314,7 @@ affordable_vs_market <- ggplot(data = adu_by_zone_wider,
     legend.position = c(0.83, 0.8))
 
 # Plot regression of rents on number of ADUs per census tract
-income_regression <- ggplot(data = df_tract_counts_census,
+rent_regression <- ggplot(data = df_tract_counts_census,
        aes(x = median_gross_rent,
            y = count)) +
   geom_point(fill = "#33756D", color = "#33756D",
@@ -340,6 +340,9 @@ income_regression <- ggplot(data = df_tract_counts_census,
 
 # Print plots
 denials
+affordable_vs_market
+rent_regression
+adus_by_rent
 
 # Save plot
 ggsave(paste0(path, "adu_denials.png"), plot = denials)
