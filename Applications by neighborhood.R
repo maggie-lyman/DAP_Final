@@ -13,6 +13,8 @@ library(httr)
 library(jsonlite)
 library(tidycensus)
 
+# Add weighted population
+
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
   sidebarLayout(
@@ -123,25 +125,31 @@ server <- function(input, output) {
   adu_summarize <- adu_summarize |>
     left_join(census_clean, join_by("geoid10" == "GEOID"))
   
-  ## Summarize data
+  # Summarize Data
   adu_months <- adu_summarize |>
-    mutate(ADU_approved = ifelse(status == "Issued", 1, 0),
-           approval_date = mdy(status_updated_date),
-           month = round_date(approval_date, 'month'),
-           submission_date = mdy(submission_date),
-           month = round_date(submission_date, 'month'),
-           ADU_submitted = if_else(is.na(id), 0, 1)) |>
     group_by(pri_neigh) |>
-    mutate(avg_median_income = mean(median_income, na.rm = TRUE),
-           avg_gross_rent = mean(median_gross_rent, na.rm = TRUE)) |>
+    mutate(neighborhood_pop = sum(total_pop)) |>
     ungroup() |>
+    mutate(pop_share = total_pop / neighborhood_pop,
+           rent_weighted = median_gross_rent * pop_share,
+           income_weighted = median_income * pop_share) |>
+    group_by(pri_neigh) |>
+    mutate(median_neigh_rent = sum(rent_weighted),
+           median_neigh_income = sum(income_weighted)) |>
+    ungroup() |>
+    mutate(ADU_approved = ifelse(status == "Issued", 1, 0),
+         approval_date = mdy(status_updated_date),
+         month = round_date(approval_date, 'month'),
+         submission_date = mdy(submission_date),
+         month = round_date(submission_date, 'month'),
+         ADU_submitted = if_else(is.na(id), 0, 1)) |>
     group_by(month) |>
     mutate(total_approvals = sum(ADU_approved),
            total_submissions = sum(ADU_submitted)) |>
     distinct(pri_neigh, month, .keep_all = TRUE) |>
     select(pri_neigh, month, ADU_approved, total_approvals, ADU_submitted,
            median_income, total_submissions, median_gross_rent, 
-           avg_median_income, avg_gross_rent) |>
+           median_neigh_income, median_neigh_rent) |>
     ungroup()
   
   # Choose neighborhood
@@ -193,12 +201,12 @@ server <- function(input, output) {
   # Create table 
   output$median_rent <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      pull(avg_gross_rent)
+      pull(median_neigh_rent)
   })
   
   output$median_income <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
-      pull(avg_median_income)
+      pull(median_neigh_income)
   })
 }
 
