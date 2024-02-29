@@ -219,20 +219,30 @@ summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census)
 
 ## Plot Data
 # Plot choropleth of denials
-denials <- ggplot()  +
+denials <- ggplot() +
   geom_sf(data = chicago_boundaries) +
   geom_sf(data = denial_shape,
           aes(fill = denial_rate)) +
   geom_sf(data = denial_locations |> filter(denied == 1),
           size = 2, shape = 21, alpha = 0.5,
-          color = "black", fill = "#66c2a4") +
-  scale_fill_gradient(low = "#66c2a4",
-                      high = "#00441b") +
-  labs(title = "ADU denials are concentrated in Southwest zone", 
+          color = "black", fill = "#fff7bc") +
+  scale_fill_gradient(breaks = c(0.10, 0.16, 0.20), 
+  low = "#fff7bc", high = "#cc4c02") +
+  labs(title = "ADU denials are concentrated in \nSouthwest zone", 
        subtitle = "ADU denial rate and denial locations by zone",
-       fill = "Denial rate (denials/total apps)",
+       fill = "Denial rate \n(denials/total apps)",
        caption = "Source: City of Chicago Data Portal") +
-  theme_minimal() 
+  theme_void() +
+  theme(
+    text = element_text(color = "#22211d"),
+    plot.background = element_rect(fill = "#f5f5f2", color = NA),
+    panel.background = element_rect(fill = "#f5f5f2", color = NA),
+    legend.background = element_rect(fill = "#f5f5f2", color = NA),
+    legend.title = element_text(size= 10, face = "bold"),
+    plot.title = element_text(size= 14, face = "bold", hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.4, l = 2, unit = "cm")),
+    plot.subtitle = element_text(size= 9, hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.25, l = 2, unit = "cm")),
+    plot.caption = element_text(size=8, color = "#4e4d47", margin = margin(b = 0.3, r=-99, unit = "cm") ),
+    legend.position = c(0.2, 0.2))
 
 #Plot median rent by zone choropleth
 adus_by_rent <- ggplot()  +
