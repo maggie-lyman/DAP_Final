@@ -14,8 +14,8 @@ library(scales)
 library(forcats)
 
 ## Add path
-#path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
-path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
+path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+#path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
 
 ## Load data
 
@@ -215,8 +215,7 @@ adu_by_zone_wider <- adu_by_zone |>
 
 ## Regression Analysis
 
-summary(lm(count ~ median_gross_rent + total_pop, 
-           data = df_tract_counts_census))
+summary(lm(count ~ median_gross_rent + total_pop, data = df_tract_counts_census))
 
 ## Plot Data
 # Plot choropleth of denials
