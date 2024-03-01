@@ -92,6 +92,38 @@ This repo analyzes Additional Dwelling Units in Chicago. This analysis uses data
   6. **ADU pilot zones JSON:** Data includes ADU ordinance zone boundaries
   7. **2020 American Community Survey:** Data is collected using API. Includes Cook county data for total population, poverty income ratio, median income, median gross rent, median age, rate of owner occupied housing, rate of owner occupied housing by percent income, gross rent per percent income. *Note:* Not all fields are used in the study, but could be used for relevant future analysis.
   8. **Chicago subreddit text data:** Text data scraped from Chicago subreddit thread about ADU ordinance. Comment text downloaded for analysis.
+  
+### Description of code + order the files should fun
+
+The R files included in the repo are described below and should be run in the following order:
+
+  1. **staticplot.R:** 
+
+The code reads in data sources 1-7 listed above. For spatial datasets, the CRS is set to 4326 to maintain consistency. For the ACS data, an API is used to pull 2020 survey data. The data sources are then cleaned using two functions: rename_columns and make_coord. New column names are applied to the ACS data to replace the variable codes. Next, a series of joins are used to join the ACS data with census tract geometries, ADU location geometries with census tract geometries and census tract geometries with ADU zone geometries.
+
+The code then identifies the location of ADU permit denials and joins the denial geometries with the ADU zone geometries. Next, the code identifies the count of ADUs in each census tract and adds a column that specifies whether a census tract is inside or outside of an ADU zone. The tract codes for each census tract within an ADU zone are added to a list so that the ACS data can be filtered to include only census tracts within an ADU zone. Joins are performed to generate a dataframe that includes the geometries of the 314 census tracts within ADU zones along with the count of ADUs in each tract and the ACS data. A check confirms that all permitted ADUs are included.
+
+Next, the code calculates each census tract's proportion of the total zone population. The proportions are used to weight the median gross rent of each census tract. The result is a population-weighted median gross rent for each ADU zone.
+
+The number of market-rate and affordable ADUs are then calculated. A pivot wider puts the data in the format necessary for a bar plot.
+
+Lastly, three static plots are generated, printed and saved:
+
+- Choropleth: ADU permit denial locations
+- Choropleth: Median gross rent by ADU zone
+- Bar plot: Comparison of affordable and market-rate ADUs 
+
+   2. **model.R:** 
+
+The code runs a linear regression of ADU count on median gross rent of each census tract within an ADU zone. A control for census tract population is included.
+
+The code then creates a plot of median gross rent vs. the number of ADUs per census tract. A linear regression line shows that median gross rent is positively correlated with the number of new ADUs in a census tract.
+
+   3. **shinyapp.R:**
+   
+
+   
+   4. **textprocess.R:**
 
 ### Packages to use this repo include:
 
