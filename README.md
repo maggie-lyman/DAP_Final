@@ -1,5 +1,20 @@
 # DAP_Final
 
+**To Do as of 3/1**
+1. Email prof about our github - Maggie
+2. Organization - Move regression to separate file - Max
+3. Readme - What each code and what order - Max
+4. Readme - Data source and description of data - Maggie
+5. Readme - What needs to be modified to replicate - Maggie
+6. Readme - Date created, authors, version, packages, package versions - Max
+7. Readme - Link to shiny apps - Maggie
+8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie
+9. Organization - Create data folder and images folder, put images in there - Max
+10. Write up - Research question/background - Max
+11. Write up - Approach taken/coding involved/difficulties - Maggie
+12. Write up - Results and future research - Max
+13. Write up - Github user names and names - Maggie/Max
+
 **To Do as of 2/22**
   1. Analysis section --> update "maggie app.R" page to include regression and graph
   2. Finish slides --> Make sure it knits and graphs are included
