@@ -5,9 +5,9 @@
 2. Organization - Move regression to separate file - Max
 3. Readme - What each code and what order - Max
 4. Readme - Data source and description of data - Maggie DONE
-5. Readme - What needs to be modified to replicate - Maggie
+5. Readme - What needs to be modified to replicate - Maggie (mostly) DONE
 6. Readme - Date created, authors, version, packages, package versions - Max
-7. Readme - Link to shiny apps - Maggie
+7. Readme - Link to shiny apps - Maggie DONE
 8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie
 9. Organization - Create data folder and images folder, put images in there - Max
 10. Write up - Research question/background - Max
@@ -101,3 +101,12 @@ This repo analyzes Additional Dwelling Units in Chicago. This analysis uses data
   - **model.R:** <-- come back****
   - **shinyapp.R:** Update path in line 39 and (*optional*) API Census key in line 60
   - **textprocess.R:** None
+  
+### Link to Shiny Plot
+
+*Note:* At this time, Shiny apps are not deployed. Users of this repo have permission to deploy Shiny Apps. 
+
+Local Shiny App Links are as followed:
+
+  1. [shinyapp.R](http://127.0.0.1:5962/)
+  2. [textprocess.R](http://127.0.0.1:6970/)
