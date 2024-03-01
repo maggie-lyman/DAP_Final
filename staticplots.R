@@ -227,8 +227,8 @@ denials <- ggplot() +
           size = 2, shape = 21, alpha = 0.5,
           color = "black", fill = "#fff7bc") +
   scale_fill_gradient(breaks = c(0.10, 0.16, 0.20), 
-  low = "#fff7bc", high = "#cc4c02") +
-  labs(title = "ADU denials are concentrated in \nSouthwest zone", 
+                      low = "#fff7bc", high = "#cc4c02") +
+  labs(title = "ADU denials are concentrated in the South zone", 
        subtitle = "ADU denial rate and denial locations by zone",
        fill = "Denial rate \n(denials/total apps)",
        caption = "Source: City of Chicago Data Portal") +

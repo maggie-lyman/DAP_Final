@@ -213,10 +213,7 @@ adu_by_zone <- adu_clean |>
 adu_by_zone_wider <- adu_by_zone |>
   pivot_longer(cols = c(total_affordable, total_market_rate), names_to = "Metric", values_to = "Count")
 
-## Regression Analysis
 
-summary(lm(count ~ median_gross_rent + total_pop, 
-           data = df_tract_counts_census))
 
 ## Plot Data
 # Plot choropleth of denials
@@ -229,7 +226,7 @@ denials <- ggplot() +
           color = "black", fill = "#fff7bc") +
   scale_fill_gradient(breaks = c(0.10, 0.16, 0.20), 
   low = "#fff7bc", high = "#cc4c02") +
-  labs(title = "ADU denials are concentrated in \nSouthwest zone", 
+  labs(title = "ADU denials are concentrated in the South zone", 
        subtitle = "ADU denial rate and denial locations by zone",
        fill = "Denial rate \n(denials/total apps)",
        caption = "Source: City of Chicago Data Portal") +
@@ -302,35 +299,9 @@ affordable_vs_market <- ggplot(data = adu_by_zone_wider,
     plot.caption = element_text(size=10, color = "#4e4d47", margin = margin(b = 0.3, t = 0.3, r=-99, unit = "cm") ),
     legend.position = c(0.83, 0.8))
 
-# Plot regression of rents on number of ADUs per census tract
-rent_regression <- ggplot(data = df_tract_counts_census,
-       aes(x = median_gross_rent,
-           y = count)) +
-  geom_point(fill = "#33756D", color = "#33756D",
-             shape = 21, size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "red") +
-  scale_y_continuous(breaks = c(0, 5, 10, 15), expand = expansion(mult = c(0.1))) +
-  scale_x_continuous(breaks = c(0, 1000, 2000, 3000), labels = c("$0", "$1,000", "$2,000", "$3,000"), expand = expansion(mult = c(0.1))) +
-  labs(title = "Median gross rent is correlated with ADU permits",
-       subtitle = "Number of ADU permits compared to median gross rent, by census tract",
-       y = "Number of ADU Permits",
-       x = "Median Gross Rent",
-       caption = "Source: City of Chicago Data Portal | 2022 American Community Survey") +
-  theme_minimal() +
-  theme(
-    text = element_text(color = "#22211d"),
-    plot.background = element_rect(fill = "#f5f5f2", color = NA),
-    panel.background = element_rect(fill = "#f5f5f2", color = NA),
-    plot.title = element_text(size= 16, face = "bold", hjust=0.01, color = "#4e4d47", margin = margin(b = -0.1, t = 0.2, l = 2, unit = "cm")),
-    axis.text = element_text(size= 10),
-    axis.title = element_text(size= 12, face = "bold"),
-    plot.subtitle = element_text(size= 12, hjust=0.01, color = "#4e4d47", margin = margin(b = 0.1, t = 0.25, l = 2, unit = "cm")),
-    plot.caption = element_text(size=10, color = "#4e4d47", margin = margin(b = 0.3, t = 0.5, r=-99, unit = "cm") ))
-
 # Print plots
 denials
 affordable_vs_market
-rent_regression
 adus_by_rent
 
 # Save plot
