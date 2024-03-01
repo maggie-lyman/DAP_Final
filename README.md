@@ -8,7 +8,7 @@
 5. Readme - What needs to be modified to replicate - Maggie (mostly) DONE
 6. Readme - Date created, authors, version, packages, package versions - Max
 7. Readme - Link to shiny apps - Maggie DONE
-8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie
+8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie DONE
 9. Organization - Create data folder and images folder, put images in there - Max
 10. Write up - Research question/background - Max
 11. Write up - Approach taken/coding involved/difficulties - Maggie
