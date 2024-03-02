@@ -10,7 +10,6 @@ library(httr)
 library(jsonlite)
 library(tidycensus)
 
-#Add weighted population
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
   sidebarLayout(
@@ -35,8 +34,8 @@ ui <- fluidPage(
 
 server <- function(input, output) { 
   #Set path
-  #path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/Data/"
-  path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/Data/"
+  path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/Data/"
+  #path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/Data/"
   
   ## Read in data
   
