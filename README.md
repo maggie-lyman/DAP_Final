@@ -11,7 +11,7 @@
 8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie DONE
 9. Organization - Create data folder and images folder, put images in there - Max DONE
 10. Write up - Research question/background - Max
-11. Write up - Approach taken/coding involved/difficulties - Maggie
+11. Write up - Approach taken/coding involved/difficulties - Maggie DONE
 12. Write up - Results and future research - Max
 13. Write up - Github user names and names - Maggie/Max
 
