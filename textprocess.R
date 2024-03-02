@@ -40,25 +40,25 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) { 
-  # Upload data using RedditExtractoR package
+  #Upload data using RedditExtractoR package
   url <- "https://www.reddit.com/r/chicago/comments/13wu8pw/adu_citywide_expansion_ordinance_introduced_to/"
   reddit <- get_thread_content(url)
   
-  # Filter for comment text data
+  #Filter for comment text data
   reddit_comments <- reddit$comments
   reddit_comments <- reddit_comments$comment
   
-  # Convert to lemmas and clean
+  #Convert to lemmas and clean
   reddit_udpipe <- udpipe(reddit_comments, "english")
   reddit_lemma <- anti_join(reddit_udpipe, stop_words, by = c("lemma" = "word"))
   reddit_lemma <- reddit_lemma |>
     filter(!upos %in% c("PUNCT", "CCONJ"))
   
-  # Create new lemma dataframe
+  #Create new lemma dataframe
   reddit_token <- reddit_lemma |>
     select("doc_id", "token", "lemma", "token_id", "head_token_id", "upos")
   
-  # Aggregate text data
+  #Aggregate text data
   reddit_aggregate <- reddit_token |>
     group_by(lemma) |>
     mutate(n_lemma = n()) |>
@@ -66,13 +66,13 @@ server <- function(input, output) {
     mutate(prop_lemma = n_lemma / sum(n_lemma)) |>
     distinct(lemma, .keep_all = TRUE)
   
-  # Get sentiments
+  #Get sentiments
   sentiment_nrc <- get_sentiments("nrc") |>
     rename(nrc = sentiment)
   sentiment_afinn <- get_sentiments('afinn') %>%
     rename(afinn = value)
   
-  # Functions to merge data
+  #Functions to merge data
   merge_nrc <- function(df){
     df |>
       left_join(sentiment_nrc, by = c("lemma" = "word")) |>
@@ -85,11 +85,11 @@ server <- function(input, output) {
       filter(!is.na(afinn))
   }
   
-  # Merge sentiments
+  #Merge sentiments
   reddit_nrc <- merge_nrc(reddit_aggregate)
   reddit_afinn <- merge_afinn(reddit_aggregate)
   
-  # Find summary statistics
+  #Find summary statistics
   summary_table <- reactive({
     reddit_afinn |>
     summarize(median = median(afinn, na.rm = TRUE),
@@ -103,7 +103,7 @@ server <- function(input, output) {
     summary_table()
     })
   
-  # Plot nrc
+  #Plot nrc
   output$sentiment_graph <- renderPlot({
     reddit_nrc |>
     ggplot(aes(x = nrc)) +
@@ -122,7 +122,7 @@ server <- function(input, output) {
     theme_bw()
   })
   
-  # Functions for dependencies graphs
+  #Functions for dependencies graphs
   children <- function(interested_word){
     reddit_lemma |>
       filter(lemma == interested_word) |>
@@ -150,7 +150,7 @@ server <- function(input, output) {
       summarize(n = n()) |>
       ungroup() |>
       arrange(desc(n)) |>
-      head(40) # filtered for top 40 words to increase graph readability
+      head(40) #Filtered for top 40 words to increase graph readability
     
     return(bigram_counts)
   }
@@ -187,9 +187,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
-
-
-
-
-
-

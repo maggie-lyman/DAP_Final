@@ -10,8 +10,7 @@ library(httr)
 library(jsonlite)
 library(tidycensus)
 
-# Add weighted population
-
+#Add weighted population
 ui <- fluidPage(
   titlePanel("Additional Dwelling Unit Applications"),
   sidebarLayout(
@@ -35,15 +34,16 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) { 
-  # Set path
-  path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+  #Set path
+  #path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
+  path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
   
   ## Read in data
   
-  # Upload CSV
+  #Upload CSV
   adus <- read_csv(paste0(path, "Additional_Dwelling_Unit_Preapproval_Applications_20240216.csv"))
   
-  # Shape Files
+  #Shape Files
   zipF <- paste0(path, "Boundaries - Census Tracts - 2010.zip")
   unzip(zipF,exdir=path)
   chicago_tracts <- st_read(
@@ -55,8 +55,8 @@ server <- function(input, output) {
     file.path(path, "geo_export_ab2c9a8a-dc67-4ec7-a969-bb86c9c5c6bd.shp")
   )
   
-  # Census
-  # Upload census
+  #Census
+  #Upload census
   key <- "a58ec96cdf12838255365193b5aa59b943091de3"
   census_data <- get_acs(geography = "tract",
                          variables = c("B01003_001", "B05010_001", "B19326_001",
@@ -69,7 +69,7 @@ server <- function(input, output) {
                          key = key,
                          survey = "acs5")
   
-  # Add functions
+  #Add functions
   rename_columns <- function(df){ 
     snake <- to_snake_case(names(df))
     names <- noquote(snake, right = FALSE)
@@ -83,21 +83,21 @@ server <- function(input, output) {
   }
   
   ## Clean and merge data
-  # Change CRS of shapefiles
+  #Change CRS of shapefiles
   chicago_tracts <- st_transform(chicago_tracts, 
                                  crs = 4326)
   
-  # Change CRS of shapefile
+  #Change CRS of shapefile
   chicago_neighborhoods <- st_transform(chicago_neighborhoods, 
                                         crs = 4326)
   
   
-  # Clean CSV
+  #Clean CSV
   adu_clean <- rename_columns(adus)
   adu_clean <- make_coord(adu_clean)
   
   
-  # Clean census
+  #Clean census
   census_wide <- census_data |>
     dplyr::select(-moe) |>
     pivot_wider(names_from = variable,
@@ -122,8 +122,9 @@ server <- function(input, output) {
   adu_summarize <- adu_summarize |>
     left_join(census_clean, join_by("geoid10" == "GEOID"))
   
-  # Summarize Data
+  #Summarize Data
   adu_months <- adu_summarize |>
+    drop_na(total_pop, median_gross_rent, median_income) |>
     group_by(pri_neigh) |>
     mutate(neighborhood_pop = sum(total_pop)) |>
     ungroup() |>
@@ -149,7 +150,7 @@ server <- function(input, output) {
            median_neigh_income, median_neigh_rent) |>
     ungroup()
   
-  # Choose neighborhood
+  #Choose neighborhood
   observeEvent(adu_months, {
     nb_options <- adu_months |>
       group_by(pri_neigh) |>
@@ -159,13 +160,13 @@ server <- function(input, output) {
     updateSelectInput(inputId = "select_neighborhood", choices = nb_options) 
   })
   
-  # Filter Data  
+  #Filter Data  
   chosen_neighborhood <- reactive({
     adu_months |>
       filter(pri_neigh == input$select_neighborhood)
   })
   
-  # Plot ADU submissions
+  #Plot ADU submissions
   output$graph <- renderPlotly({
     plot <- ggplot(data = chosen_neighborhood()) +
       geom_point(aes(x = month,
@@ -195,7 +196,7 @@ server <- function(input, output) {
     ggplotly(plot)
   })
   
-  # Create table 
+  #Create table 
   output$median_rent <- renderTable({chosen_neighborhood() |>
       distinct(pri_neigh, .keep_all = TRUE) |>
       pull(median_neigh_rent)
