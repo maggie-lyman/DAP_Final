@@ -35,13 +35,13 @@ ui <- fluidPage(
 
 server <- function(input, output) { 
   #Set path
-  #path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
-  path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
+  #path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/Data/"
+  path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/Data/"
   
   ## Read in data
   
   #Upload CSV
-  adus <- read_csv(paste0(path, "Additional_Dwelling_Unit_Preapproval_Applications_20240216.csv"))
+  adus <- read_csv(paste0(path, "Additional_Dwelling_Unit_Preapproval_Applications_20240207.csv"))
   
   #Shape Files
   zipF <- paste0(path, "Boundaries - Census Tracts - 2010.zip")

@@ -14,8 +14,8 @@ library(scales)
 library(forcats)
 
 ## Add path
-path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/"
-#path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/"
+#path <- "C:/Users/mlyma/OneDrive/Documents/GitHub/DAP_Final/Data/"
+path <- "/Users/maxwellwagner/Documents/GitHub/DAP_Final/Data/"
 
 ## Load data
 
