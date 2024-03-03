@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Maggie Lyman Github: maggie-lyman
 Max Wagner Github: maxwellwikstrom
 
+**Writeup**
+
 In May 2021, Chicago passed the Additional Dwelling Unit (ADU) Ordinance. The legislation streamlined zoning requirements for basement and attic apartment conversion projects and legalized the construction of backyard coach houses. The ordinance was enacted in five pilot zones (North, Northwest, South, West, and Southwest) dispersed throughout the city. 
 
 The ADU Ordinance sets some restrictions by zone. In the West, South, and Southwest zones, only two ADU permits can be issued per block per year. In these zones, buildings with one to three units must also be owner-occupied to add a basement/attic unit. Conversely, in the North and Northwest zones, homeowners can build coach houses on vacant lots before a primary residence is built. There are additional stipulations across all zones to increase affordability. For properties with two or more new ADUs, rent must be set at 60% area median income (AMI) for 30 years for every other additional unit added to the property. 
