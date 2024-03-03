@@ -1,19 +1,4 @@
-**To Do as of 3/1**
-1. Email prof about our github - Maggie DONE
-2. Organization - Move regression to separate file - Max DONE
-3. Readme - What each code and what order - Max DONE
-4. Readme - Data source and description of data - Maggie DONE
-5. Readme - What needs to be modified to replicate - Maggie DONE
-6. Readme - Date created, authors, version, packages, package versions - Max DONE
-7. Readme - Link to shiny apps - Maggie DONE
-8. Organization - Rename files - choropleth file to static plot R, shiny apps, write up - Maggie DONE
-9. Organization - Create data folder and images folder, put images in there - Max DONE
-10. Write up - Research question/background - Max DONE
-11. Write up - Approach taken/coding involved/difficulties - Maggie DONE
-12. Write up - Results and future research - Max DONE
-13. Write up - Github user names and names - Maggie/Max
-
-### ReadMe File - DAP Final
+### ReadMe File - DAP Final: Analyzing Chicago's ADU Ordinance
 
 This repo analyzes Additional Dwelling Units in Chicago. This analysis uses data collected from the City of Chicago, US Census, and text data from the Chicago sub-reddit.
 
